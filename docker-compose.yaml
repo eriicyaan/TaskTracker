@@ -1,0 +1,107 @@
+services:
+  database:
+    container_name: task_tracker_database
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    networks:
+      - task_tracker_network
+    volumes:
+      - task_tracker_database_volume:/var/lib/postgresql/data
+    env_file:
+      - ../task-tracker-backend/db.env
+
+  kafka:
+    container_name: task_tracker_kafka
+    image: apache/kafka:4.1.0
+    ports:
+       - "9092:9092"
+    networks:
+      - task_tracker_network
+    volumes:
+      - task_tracker_kafka_volume:/var/lib/kafka/data
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://task_tracker_kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@task_tracker_kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+
+  backend:
+    container_name: task_tracker_backend
+    image: task-tracker-backend
+    build:
+      context: ../task-tracker-backend
+      dockerfile: Dockerfile
+      secrets:
+        - maven_settings
+    env_file:
+      - ../task-tracker-backend/.env
+    ports:
+      - "8080:8080"
+    networks:
+      - task_tracker_network
+
+  email_sender:
+    container_name: task_tracker_email_sender
+    image: task-tracker-email-sender
+    build:
+      context: ../task-tracker-email-sender
+      dockerfile: Dockerfile
+      secrets:
+        - maven_settings
+    env_file:
+      - ../task-tracker-email-sender/.env
+    ports:
+      - "8081:8081"
+    networks:
+      - task_tracker_network
+
+  scheduler:
+    container_name: task_tracker_scheduler
+    image: task-tracker-scheduler
+    build:
+      context: ../task-tracker-scheduler
+      dockerfile: Dockerfile
+      secrets:
+        - maven_settings
+    env_file:
+      - ../task-tracker-scheduler/.env
+    ports:
+      - "8082:8082"
+    networks:
+      - task_tracker_network
+
+  summarization_server:
+    container_name: task_tracker_summarization_server
+    image: task-tracker-summarization-server
+    build:
+      context: ../task-tracker-summarization-server
+      dockerfile: Dockerfile
+      secrets:
+        - maven_settings
+    env_file:
+      - ../task-tracker-summarization-server/.env
+    ports:
+      - "8083:8083"
+    networks:
+      - task_tracker_network
+
+
+
+volumes:
+  task_tracker_database_volume:
+  task_tracker_kafka_volume:
+
+networks:
+  task_tracker_network:
+
+secrets:
+  maven_settings:
+    file: ~/.m2/settings.xml
