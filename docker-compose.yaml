@@ -1,6 +1,6 @@
 services:
   database:
-    container_name: task_tracker_database
+    container_name: task-tracker-database
     image: postgres:16
     ports:
       - "5432:5432"
@@ -12,7 +12,7 @@ services:
       - ../task-tracker-backend/db.env
 
   kafka:
-    container_name: task_tracker_kafka
+    container_name: task-tracker-kafka
     image: apache/kafka:4.1.0
     ports:
        - "9092:9092"
@@ -24,17 +24,17 @@ services:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://task_tracker_kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://task-tracker-kafka:9092
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@task_tracker_kafka:9093
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@task-tracker-kafka:9093
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
 
   backend:
-    container_name: task_tracker_backend
+    container_name: task-tracker-backend
     image: task-tracker-backend
     build:
       context: ../task-tracker-backend
@@ -49,7 +49,7 @@ services:
       - task_tracker_network
 
   email_sender:
-    container_name: task_tracker_email_sender
+    container_name: task-tracker-email-sender
     image: task-tracker-email-sender
     build:
       context: ../task-tracker-email-sender
@@ -64,7 +64,7 @@ services:
       - task_tracker_network
 
   scheduler:
-    container_name: task_tracker_scheduler
+    container_name: task-tracker-scheduler
     image: task-tracker-scheduler
     build:
       context: ../task-tracker-scheduler
@@ -79,7 +79,7 @@ services:
       - task_tracker_network
 
   summarization_server:
-    container_name: task_tracker_summarization_server
+    container_name: task-tracker-summarization-server
     image: task-tracker-summarization-server
     build:
       context: ../task-tracker-summarization-server
