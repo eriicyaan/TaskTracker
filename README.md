@@ -11,7 +11,7 @@ Infrastructure-репозиторий проекта Task Tracker.
 | [task-tracker-backend](https://github.com/eriicyaan/task-tracker-backend)             | Пользователи, авторизация и управление задачами             |
 | [task-tracker-scheduler](https://github.com/eriicyaan/task-tracker-scheduler)         | Планирование и формирование ежедневных отчётов              |
 | [task-tracker-email-sender](https://github.com/eriicyaan/task-tracker-email-sender)   | Отправка email через SMTP                                   |
-| [task-tracker-summarization](https://github.com/eriicyaan/task-tracker-summarization) | Генерация отчётов по задачам с использованием LLM           |
+| [task-tracker-summarization](https://github.com/eriicyaan/task-tracker-summarization-server) | Генерация отчётов по задачам с использованием LLM           |
 | [task-tracker-contracts](https://github.com/eriicyaan/task-tracker-contracts)         | Общие DTO, события и контракты межсервисного взаимодействия |
 
 ## Infrastructure
